@@ -57,3 +57,16 @@ exports.login = async (req, res, next) => {
     },
   });
 };
+
+exports.friendsAdd = async (req, res) => {
+    try {
+        res.status(200).json({
+            user: req.user
+        });
+    } catch (error) {
+        res.status(400).json({
+            status: "fail",
+            error,
+        })
+    }
+}
