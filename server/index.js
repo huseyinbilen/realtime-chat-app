@@ -12,6 +12,9 @@ mongoose
     console.log("DB Connected Successfully.");
   });
 
+// Middlewares
+app.use(express.json()); // for parsing application/json
+
 const PORT = 3000;
 
 app.use("/", pageRoute);
