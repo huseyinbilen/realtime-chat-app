@@ -6,7 +6,6 @@ module.exports = (req, res, next) => {
 
     if (authHeader) {
         const token = authHeader.split(' ')[1];
-        console.log(token);
 
         jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
             if (err) {

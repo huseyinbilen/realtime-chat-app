@@ -38,7 +38,7 @@ exports.login = async (req, res, next) => {
   try {
     //Creating jwt token
     token = jwt.sign(
-      { userId: existingUser.id, email: existingUser.email },
+      { id: existingUser.id, email: existingUser.email },
       process.env.TOKEN_SECRET,
       { expiresIn: "1h" }
     );
@@ -60,8 +60,12 @@ exports.login = async (req, res, next) => {
 
 exports.friendsAdd = async (req, res) => {
     try {
+        let user = await User.findById(req.user.id);
+        user.friends.push(req.body.friends);
+        user.save();
         res.status(200).json({
-            user: req.user
+            status: "success",
+            description: "Friends Added"
         });
     } catch (error) {
         res.status(400).json({
