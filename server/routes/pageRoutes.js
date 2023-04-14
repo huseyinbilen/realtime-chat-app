@@ -7,5 +7,6 @@ const authMiddleware = require('../middlewares/authMiddleware');
 router.route('/register').post(pageController.register);
 router.route('/login').post(pageController.login);
 router.route('/friends/add').post(authMiddleware, pageController.friendsAdd);
+router.route('/friends/remove').post(authMiddleware, pageController.friendsRemove);
 
 module.exports = router;

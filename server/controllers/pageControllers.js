@@ -65,7 +65,24 @@ exports.friendsAdd = async (req, res) => {
         user.save();
         res.status(200).json({
             status: "success",
-            description: "Friends Added"
+            description: "Friend Added"
+        });
+    } catch (error) {
+        res.status(400).json({
+            status: "fail",
+            error,
+        })
+    }
+}
+
+exports.friendsRemove = async (req, res) => {
+    try {
+        let user = await User.findById(req.user.id);
+        user.friends.splice(user.friends.indexOf(req.body.friends), 1);
+        user.save();
+        res.status(200).json({
+            status: "success",
+            description: "Friend Removed"
         });
     } catch (error) {
         res.status(400).json({
