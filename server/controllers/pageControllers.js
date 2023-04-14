@@ -91,3 +91,26 @@ exports.friendsRemove = async (req, res) => {
         })
     }
 }
+
+exports.friendsGet = async (req, res) => {
+  try {
+    let user = await User.findById(req.user.id);
+    let friends = [];
+    for(let i = 0; i < user.friends.length; i++) {
+      let friend = await User.findById(user.friends[i]);
+      let temp = {
+        id: friend.id,
+        username: friend.username
+      }
+      friends.push(temp);
+    }
+    res.status(200).json({
+      friends
+    })
+  } catch (error) {
+      res.status(400).json({
+        status: "fail",
+        error
+      })
+  }
+}

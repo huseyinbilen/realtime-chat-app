@@ -8,5 +8,6 @@ router.route('/register').post(pageController.register);
 router.route('/login').post(pageController.login);
 router.route('/friends/add').post(authMiddleware, pageController.friendsAdd);
 router.route('/friends/remove').post(authMiddleware, pageController.friendsRemove);
+router.route('/friends/all').get(authMiddleware, pageController.friendsGet);
 
 module.exports = router;
