@@ -114,3 +114,25 @@ exports.friendsGet = async (req, res) => {
       })
   }
 }
+
+exports.getAllUser = async (req, res) => {
+  try {
+    let allUsers = await User.find();
+    let users = [];
+    for(let i = 0; i < allUsers.length; i++) {
+      let temp = {
+        id: allUsers[i].id,
+        username: allUsers[i].username
+      }
+      users.push(temp);
+    }
+    res.status(200).json({
+      users
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "fail",
+      error
+    })
+  }
+}
