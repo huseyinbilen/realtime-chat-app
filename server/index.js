@@ -15,10 +15,10 @@ mongoose
 // Middlewares
 app.use(express.json()); // for parsing application/json
 
-const PORT = 3000;
+const PORT = 3001;
 
 app.use("/", pageRoute);
 
-app.listen(3000, () => {
+app.listen(3001, () => {
   console.log("App Started on Port:", PORT);
 });
