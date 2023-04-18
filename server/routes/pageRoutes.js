@@ -4,6 +4,7 @@ const router = express.Router();
 const pageController = require('../controllers/pageControllers');
 const authMiddleware = require('../middlewares/authMiddleware');
 
+router.route('/').get(pageController.mainPage);
 router.route('/register').post(pageController.register);
 router.route('/login').post(pageController.login);
 router.route('/friends/add').post(authMiddleware, pageController.friendsAdd);
