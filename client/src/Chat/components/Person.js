@@ -5,7 +5,7 @@ function Person(props) {
                 <div className="w-full pb-2">
                   <div className="flex justify-between">
                     <span className="block ml-2 font-bold text-gray-600">
-                      {props.personData.username}
+                      {props.username}
                     </span>
                   </div>
                 </div>

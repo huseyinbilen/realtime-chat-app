@@ -11,15 +11,13 @@ class Chat extends Component {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + document.cookie.split("=")[1], // token değerini cookie'den alınan ilk değer olarak varsayalım
+        Authorization: "Bearer " + document.cookie.split("=")[1],
       },
-      // body: JSON.stringify({ email: email, password: password }),
     };
     fetch("http://localhost:3001/friends/all", requestOptions)
       .then((response) => response.json())
       .then((data) => {
-        this.setState({ data });
-        console.log(data);
+        this.setState({ data: data.friends });
       });
   }
   render() {
@@ -56,7 +54,9 @@ class Chat extends Component {
             <ul className="overflow-auto h-[32rem]">
               <h2 className="my-2 mb-2 ml-2 text-lg">Chats</h2>
               <li>
-                <Person personData={{ id: "id1234", username: "John Doe" }} />
+                {data.map((element) => (
+                  <Person id={element.id} username={element.username} />
+                ))}
               </li>
             </ul>
           </div>
