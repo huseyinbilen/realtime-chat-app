@@ -1,6 +1,9 @@
+import { BrowserRouter, useNavigate } from "react-router-dom";
 import "./Login.css";
 
-function Login() {
+function Login(props) {
+  const navigate = useNavigate();
+
   const loginMethod = (e) => {
     e.preventDefault();
     let email = document.getElementById("login-email").value;
@@ -18,6 +21,8 @@ function Login() {
         document.cookie = `token=${data.data.token}; expires=${new Date(
           new Date().setFullYear(new Date().getFullYear() + 1)
         )}; path=/`;
+        props.onLogin();
+        navigate("/chat");
       });
   };
 
