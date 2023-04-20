@@ -8,6 +8,8 @@ class Chat extends Component {
       id: "",
       username: ""
     },
+    allUsers: [],
+    filteredUsers: []
   };
 
   componentDidMount() {
@@ -30,9 +32,31 @@ class Chat extends Component {
     this.setState({ selectedPerson: {id: id, username: username} }); // seçilen kişiyi state'e kaydet
   };
 
+  searchUsers = (event) => {
+    console.log(event.target.value);
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + document.cookie.split("=")[1],
+      },
+    };
+    
+    fetch("http://localhost:3001/users/all", requestOptions)
+      .then((response) => response.json())
+      .then((data) => {
+        const filteredData = data.users.filter(
+          (element) =>
+            element.username.toLowerCase().includes(event.target.value.toLowerCase())
+        );
+        this.setState({ allUsers: filteredData });
+      });
+  };
+
   render() {
     const { data } = this.state;
     const { selectedPerson } = this.state;
+    const { allUsers } = this.state;
     return (
       <div className="container mx-auto">
         <div className="min-w-full border rounded lg:grid lg:grid-cols-3">
@@ -57,14 +81,19 @@ class Chat extends Component {
                   className="block w-full py-2 pl-10 bg-gray-100 rounded outline-none"
                   name="search"
                   placeholder="Search"
+                  onChange={this.searchUsers}
                   required
                 />
               </div>
             </div>
 
             <ul className="overflow-auto h-[32rem]">
-              <h2 className="my-2 mb-2 ml-2 text-lg">Chats</h2>
+              <h2 className="my-2 mb-2 ml-2 text-lg">Friends</h2>
                 {data.map((element) => (
+                  <Person id={element.id} username={element.username} onClick={() => this.handlePersonClick(element.id, element.username)}/>
+                ))}
+              <h2 className="my-2 mb-2 ml-2 text-lg">Other Users</h2>
+                {allUsers.map((element) => (
                   <Person id={element.id} username={element.username} onClick={() => this.handlePersonClick(element.id, element.username)}/>
                 ))}
             </ul>
