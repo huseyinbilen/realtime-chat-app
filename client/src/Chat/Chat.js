@@ -4,6 +4,10 @@ import { Component } from "react";
 class Chat extends Component {
   state = {
     data: [],
+    selectedPerson: {
+      id: "",
+      username: ""
+    },
   };
 
   componentDidMount() {
@@ -20,8 +24,15 @@ class Chat extends Component {
         this.setState({ data: data.friends });
       });
   }
+
+  handlePersonClick = (id, username) => {
+    // console.log(id+username);
+    this.setState({ selectedPerson: {id: id, username: username} }); // seçilen kişiyi state'e kaydet
+  };
+
   render() {
     const { data } = this.state;
+    const { selectedPerson } = this.state;
     return (
       <div className="container mx-auto">
         <div className="min-w-full border rounded lg:grid lg:grid-cols-3">
@@ -53,17 +64,15 @@ class Chat extends Component {
 
             <ul className="overflow-auto h-[32rem]">
               <h2 className="my-2 mb-2 ml-2 text-lg">Chats</h2>
-              <li>
                 {data.map((element) => (
-                  <Person id={element.id} username={element.username} />
+                  <Person id={element.id} username={element.username} onClick={() => this.handlePersonClick(element.id, element.username)}/>
                 ))}
-              </li>
             </ul>
           </div>
           <div className="lg:col-span-2 lg:block">
             <div className="w-full">
               <div className="relative flex items-center p-3 border-b border-gray-300">
-                <span className="block ml-2 font-bold text-gray-600">Emma</span>
+                <span className="block ml-2 font-bold text-gray-600">{selectedPerson.username}</span>
               </div>
               <div className="relative w-full p-6 overflow-y-auto h-[40rem]">
                 <ul className="space-y-2">
