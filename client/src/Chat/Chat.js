@@ -1,15 +1,16 @@
 import Person from "./components/Person";
 import "./Chat.css";
 import { Component } from "react";
+
 class Chat extends Component {
   state = {
     data: [],
     selectedPerson: {
       id: "",
-      username: ""
+      username: "",
     },
     allUsers: [],
-    filteredUsers: []
+    filteredUsers: [],
   };
 
   componentDidMount() {
@@ -28,8 +29,7 @@ class Chat extends Component {
   }
 
   handlePersonClick = (id, username) => {
-    // console.log(id+username);
-    this.setState({ selectedPerson: {id: id, username: username} }); // seçilen kişiyi state'e kaydet
+    this.setState({ selectedPerson: { id: id, username: username } }); // seçilen kişiyi state'e kaydet
   };
 
   searchUsers = (event) => {
@@ -41,16 +41,23 @@ class Chat extends Component {
         Authorization: "Bearer " + document.cookie.split("=")[1],
       },
     };
-    
+
     fetch("http://localhost:3001/users/all", requestOptions)
       .then((response) => response.json())
       .then((data) => {
-        const filteredData = data.users.filter(
-          (element) =>
-            element.username.toLowerCase().includes(event.target.value.toLowerCase())
+        const filteredData = data.users.filter((element) =>
+          element.username
+            .toLowerCase()
+            .includes(event.target.value.toLowerCase())
         );
         this.setState({ allUsers: filteredData });
       });
+  };
+
+  handleLogout = () => {
+    document.cookie = `token=${document.cookie.split("=")[1]}; expires=${new Date(
+      new Date().setFullYear(new Date().getFullYear() - 100)
+    )}; path=/`;
   };
 
   render() {
@@ -59,6 +66,10 @@ class Chat extends Component {
     const { allUsers } = this.state;
     return (
       <div className="container mx-auto">
+        <button className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={this.handleLogout}>
+          Logout
+        </button>
+
         <div className="min-w-full border rounded lg:grid lg:grid-cols-3">
           <div className="border-r border-gray-300 lg:col-span-1">
             <div className="mx-3 my-3">
@@ -89,19 +100,33 @@ class Chat extends Component {
 
             <ul className="overflow-auto h-[32rem]">
               <h2 className="my-2 mb-2 ml-2 text-lg">Friends</h2>
-                {data.map((element) => (
-                  <Person id={element.id} username={element.username} onClick={() => this.handlePersonClick(element.id, element.username)}/>
-                ))}
+              {data.map((element) => (
+                <Person
+                  id={element.id}
+                  username={element.username}
+                  onClick={() =>
+                    this.handlePersonClick(element.id, element.username)
+                  }
+                />
+              ))}
               <h2 className="my-2 mb-2 ml-2 text-lg">Other Users</h2>
-                {allUsers.map((element) => (
-                  <Person id={element.id} username={element.username} onClick={() => this.handlePersonClick(element.id, element.username)}/>
-                ))}
+              {allUsers.map((element) => (
+                <Person
+                  id={element.id}
+                  username={element.username}
+                  onClick={() =>
+                    this.handlePersonClick(element.id, element.username)
+                  }
+                />
+              ))}
             </ul>
           </div>
           <div className="lg:col-span-2 lg:block">
             <div className="w-full">
               <div className="relative flex items-center p-3 border-b border-gray-300">
-                <span className="block ml-2 font-bold text-gray-600">{selectedPerson.username}</span>
+                <span className="block ml-2 font-bold text-gray-600">
+                  {selectedPerson.username}
+                </span>
               </div>
               <div className="relative w-full p-6 overflow-y-auto h-[40rem]">
                 <ul className="space-y-2">
