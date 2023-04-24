@@ -11,5 +11,6 @@ router.route('/friends/add').post(authMiddleware, pageController.friendsAdd);
 router.route('/friends/remove').post(authMiddleware, pageController.friendsRemove);
 router.route('/friends/all').get(authMiddleware, pageController.friendsGet);
 router.route('/users/all').get(authMiddleware, pageController.getAllUser);
+router.route('/user-info').get(authMiddleware, pageController.getUserInfo);
 
 module.exports = router;

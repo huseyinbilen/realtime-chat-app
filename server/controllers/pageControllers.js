@@ -3,7 +3,6 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 const User = require("../models/User");
-
 exports.mainPage = async (req, res) => {
   try {
     res.send("Hello World");
@@ -46,7 +45,6 @@ exports.login = async (req, res, next) => {
           process.env.TOKEN_SECRET,
           { expiresIn: "1h" }
         );
-          console.log(token);
         res.status(200).json({
           success: true,
           data: {
@@ -145,3 +143,20 @@ exports.getAllUser = async (req, res) => {
     });
   }
 };
+
+
+exports.getUserInfo = async (req, res) => {
+  try {
+    let user = await User.findById(req.user.id);
+    
+    res.status(200).json({
+      id: user.id,
+      username: user.username
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "fail",
+      error
+    })
+  }
+}
