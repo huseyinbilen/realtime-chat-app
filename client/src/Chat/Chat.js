@@ -36,6 +36,21 @@ function Chat(props) {
         setData(data.friends);
       });
 
+    const otherUsersRequestOptions = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + document.cookie.split("=")[1],
+      },
+    };
+
+    fetch("http://localhost:3001/users/all", otherUsersRequestOptions)
+      .then((response) => response.json())
+      .then((data) => {
+        setAllUsers(data.users);
+        setFilteredUsers(data.users);
+      });
+
     const userInfoRequestOptions = {
       method: "GET",
       headers: {
@@ -48,7 +63,7 @@ function Chat(props) {
       .then((data) => {
         setMyInfo(data);
       });
-  });
+  }, []);
 
   useEffect(() => {
     socket.on("chat", (data) => {
@@ -76,24 +91,10 @@ function Chat(props) {
   };
 
   const searchUsers = (event) => {
-    const requestOptions = {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + document.cookie.split("=")[1],
-      },
-    };
-
-    fetch("http://localhost:3001/users/all", requestOptions)
-      .then((response) => response.json())
-      .then((data) => {
-        const filteredData = data.users.filter((element) =>
-          element.username
-            .toLowerCase()
-            .includes(event.target.value.toLowerCase())
-        );
-        setAllUsers(filteredData);
-      });
+    const filteredData = allUsers.filter((element) =>
+      element.username.toLowerCase().includes(event.target.value.toLowerCase())
+    );
+    setFilteredUsers(filteredData);
   };
 
   const handleLogout = () => {
@@ -174,7 +175,7 @@ function Chat(props) {
               />
             ))}
             <h2 className="my-2 mb-2 ml-2 text-lg">Other Users</h2>
-            {allUsers.map((element) => (
+            {filteredUsers.map((element) => (
               <Person
                 id={element.id}
                 username={element.username}
