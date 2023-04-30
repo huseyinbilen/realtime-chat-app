@@ -12,7 +12,7 @@ const socket = io("http://localhost:3001", {
 });
 
 function Chat(props) {
-  const [data, setData] = useState([]);
+  const [friends, setFriends] = useState([]);
   const [selectedPerson, setSelectedPerson] = useState({
     id: "",
     username: "",
@@ -33,7 +33,7 @@ function Chat(props) {
     fetch("http://localhost:3001/friends/all", requestOptions)
       .then((response) => response.json())
       .then((data) => {
-        setData(data.friends);
+        setFriends(data.friends);
       });
 
     const otherUsersRequestOptions = {
@@ -68,8 +68,9 @@ function Chat(props) {
   useEffect(() => {
     socket.on("chat", (data) => {
       if (data.recipient == myInfo.id) {
-        let output = document.getElementById("chat-window");
-        output.innerHTML +=
+        let output = document.getElementById(`chat-window-${data.recipient}`);
+        if(output != null) {
+          output.innerHTML +=
           `<li class="flex justify-start">
           <div class="relative max-w-xl px-4 py-2 text-gray-100 bg-green-700 rounded shadow">
             <span class="block">` +
@@ -77,6 +78,21 @@ function Chat(props) {
           `</span>
           </div>
         </li>`;
+        }
+        else {
+          let outputWindow = document.getElementById("chat-wrap");
+          outputWindow.innerHTML += `<ul class="space-y-2 selected" id="chat-window-${data.recipient}">
+          <li class="flex justify-start">
+          <div class="relative max-w-xl px-4 py-2 text-gray-100 bg-green-700 rounded shadow">
+            <span class="block">` +
+          data.message +
+          `</span>
+          </div>
+        </li>
+          </ul>`
+
+        }
+
       }
     });
 
@@ -87,6 +103,17 @@ function Chat(props) {
   }, [myInfo]);
   const handlePersonClick = (id, username) => {
     let temp = { id: id, username: username };
+    let output = document.getElementsByClassName("selected");
+    if(output.length != 0) {
+      for(let i = 0; i < output.length; i++) {
+        output[i].classList.add("hidden");
+      }
+      let temp = document.getElementById("chat-window-"+id);
+      if(temp != null) {
+        temp.classList.remove("hidden");
+      }
+      console.log(output[0]);
+    }
     setSelectedPerson(temp);
   };
 
@@ -109,6 +136,9 @@ function Chat(props) {
   const sendMsg = (user) => {
     let message = document.getElementById("message").value;
     setMsg(message);
+    if(user.id == "") {
+      return null;
+    };
     const recipientId = user.id;
     socket.emit("chat", {
       message: message,
@@ -116,16 +146,42 @@ function Chat(props) {
       sender: myInfo.id,
     });
     document.getElementById("message").value = "";
-    let output = document.getElementById("chat-window");
-    output.innerHTML +=
-      `<li class="flex justify-start">
-        <li class="flex justify-end">
+    let output = document.getElementById(`chat-window-${recipientId}`);
+    // let output = document.getElementById("chat-window");
+    if(output != null) {
+      output.innerHTML +=
+      `<li class="flex justify-end">
         <div class="relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow">
           <span class="block">` +
       message +
       `</span>
         </div>
-      </li>`;
+      </li>`
+    }
+    else {
+      let outputWindow = document.getElementById("chat-wrap");
+      outputWindow.innerHTML += `<ul class="space-y-2 selected" id="chat-window-${recipientId}">
+      <li class="flex justify-end">
+        <div class="relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow">
+          <span class="block">` +
+      message +
+      `</span>
+        </div>
+      </li>
+      </ul>`
+
+    }
+
+
+    
+    // output.innerHTML +=
+    //   `<li class="flex justify-end">
+    //     <div class="relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow">
+    //       <span class="block">` +
+    //   message +
+    //   `</span>
+    //     </div>
+    //   </li>`;
   };
 
   return (
@@ -167,7 +223,7 @@ function Chat(props) {
 
           <ul className="overflow-auto h-[32rem]">
             <h2 className="my-2 mb-2 ml-2 text-lg">Friends</h2>
-            {data.map((element) => (
+            {friends.map((element) => (
               <Person
                 id={element.id}
                 username={element.username}
@@ -194,8 +250,8 @@ function Chat(props) {
                 {selectedPerson.username}
               </span>
             </div>
-            <div className="relative w-full p-6 overflow-y-auto h-[40rem]">
-              <ul className="space-y-2" id="chat-window"></ul>
+            <div className="relative w-full p-6 overflow-y-auto h-[40rem]" id="chat-wrap">
+              {/* <ul className="space-y-2" id="chat-window"></ul> */}
             </div>
 
             <div className="flex items-center justify-between w-full p-3 border-t border-gray-300">
