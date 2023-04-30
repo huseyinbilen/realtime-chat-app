@@ -20,7 +20,6 @@ function Chat(props) {
   const [allUsers, setAllUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [myInfo, setMyInfo] = useState({ id: "", username: "" });
-  const [msg, setMsg] = useState("");
 
   useEffect(() => {
     const requestOptions = {
@@ -67,8 +66,8 @@ function Chat(props) {
 
   useEffect(() => {
     socket.on("chat", (data) => {
-      if (data.recipient == myInfo.id) {
-        let output = document.getElementById(`chat-window-${data.recipient}`);
+      if (data.recipient === myInfo.id) {
+        let output = document.getElementById(`chat-window-${data.sender}`);
         if(output != null) {
           output.innerHTML +=
           `<li class="flex justify-start">
@@ -81,7 +80,7 @@ function Chat(props) {
         }
         else {
           let outputWindow = document.getElementById("chat-wrap");
-          outputWindow.innerHTML += `<ul class="space-y-2 selected" id="chat-window-${data.recipient}">
+          outputWindow.innerHTML += `<ul class="space-y-2 selected" id="chat-window-${data.sender}">
           <li class="flex justify-start">
           <div class="relative max-w-xl px-4 py-2 text-gray-100 bg-green-700 rounded shadow">
             <span class="block">` +
@@ -104,7 +103,7 @@ function Chat(props) {
   const handlePersonClick = (id, username) => {
     let temp = { id: id, username: username };
     let output = document.getElementsByClassName("selected");
-    if(output.length != 0) {
+    if(output.length !== 0) {
       for(let i = 0; i < output.length; i++) {
         output[i].classList.add("hidden");
       }
@@ -135,8 +134,7 @@ function Chat(props) {
 
   const sendMsg = (user) => {
     let message = document.getElementById("message").value;
-    setMsg(message);
-    if(user.id == "") {
+    if(user.id === "") {
       return null;
     };
     const recipientId = user.id;
@@ -171,17 +169,6 @@ function Chat(props) {
       </ul>`
 
     }
-
-
-    
-    // output.innerHTML +=
-    //   `<li class="flex justify-end">
-    //     <div class="relative max-w-xl px-4 py-2 text-gray-700 bg-gray-100 rounded shadow">
-    //       <span class="block">` +
-    //   message +
-    //   `</span>
-    //     </div>
-    //   </li>`;
   };
 
   return (
