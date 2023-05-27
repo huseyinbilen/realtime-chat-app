@@ -4,6 +4,8 @@ const app = require("../index");
 
 require("dotenv").config();
 
+let token = "";
+
 /* Connecting to the database before each test. */
 beforeEach(async () => {
   await mongoose.connect("mongodb://localhost:27017/node-chat-app");
@@ -44,7 +46,28 @@ describe("POST /login", () => {
       email: "user@test.com",
       password: "testpass"
     });
+    token = res.body.data.token;
     expect(res.statusCode).toBe(200);
     expect(res.body.success).toBe(true);
+  });
+});
+
+describe("POST /friends/add", () => {
+  it("should add a friend", async () => {
+    const res = await request(app).post("/friends/add").set("Authorization", `Bearer ${token}`).send({
+      friends: "64386224872f568254409a30"
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.body.status).toBe("success");
+  });
+});
+
+describe("POST /friends/remove", () => {
+  it("should remove a friend", async () => {
+    const res = await request(app).post("/friends/remove").set("Authorization", `Bearer ${token}`).send({
+      friends: "64386224872f568254409a30"
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.body.status).toBe("success");
   });
 });
