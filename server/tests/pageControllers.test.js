@@ -71,3 +71,25 @@ describe("POST /friends/remove", () => {
     expect(res.body.status).toBe("success");
   });
 });
+
+describe("GET /friends/all", () => {
+  it("should list all friend", async () => {
+    const res = await request(app).get("/friends/all").set("Authorization", `Bearer ${token}`);
+    expect(res.statusCode).toBe(200);
+  });
+});
+
+describe("GET /users/all", () => {
+  it("should list all users", async () => {
+    const res = await request(app).get("/users/all").set("Authorization", `Bearer ${token}`);
+    expect(res.statusCode).toBe(200);
+  });
+});
+
+
+describe("GET /user-info", () => {
+  it("should get user info", async () => {
+    const res = await request(app).get("/user-info").set("Authorization", `Bearer ${token}`);
+    expect(res.statusCode).toBe(200);
+  });
+});
